@@ -1,0 +1,83 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0b1120;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 60px;
+  background: #111827;
+  border-bottom: 1px solid #334155;
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+}
+
+.container {
+  padding: 80px;
+  text-align: center;
+}
+
+.container h1 {
+  font-size: 52px;
+  margin-bottom: 20px;
+}
+
+.container p {
+  font-size: 22px;
+  color: #cbd5e1;
+}
+
+.country-card {
+  background: #1e293b;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px;
+  width: 300px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.countries-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.search-bar {
+  width: 350px;
+  padding: 14px 18px;
+  margin: 30px 0;
+  border-radius: 12px;
+  border: none;
+  font-size: 18px;
+  outline: none;
+
+}
+
+.region-filter {
+  width: 200px;
+  padding: 14px 18px;
+  margin: 30px 0;
+  border-radius: 12px;
+  border: none;
+  font-size: 18px;
+  outline: none;
+}
