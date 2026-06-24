@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { Link } from "react-router-dom";
 
 const Nav = styled.nav`
   height: 72px;
@@ -27,7 +28,7 @@ const NavLinks = styled.div`
   gap: 32px;
 `;
 
-const NavLink = styled.a`
+const NavLink = styled(Link)`
   color: ${({ theme }) => theme.muted};
   text-decoration: none;
   font-size: 15px;
@@ -65,9 +66,9 @@ function Navbar({ isDark, setIsDark }) {
       </Logo>
 
       <NavLinks>
-        <NavLink href="/">Home</NavLink>
-        <NavLink href="/Countries">Countries</NavLink>
-        <NavLink href="/Favorites">Favorites</NavLink>
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/countries">Countries</NavLink>
+        <NavLink to="/favorites">Favorites</NavLink>
       </NavLinks>
 
       <ThemeButton onClick={() => setIsDark(!isDark)}>

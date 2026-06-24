@@ -116,8 +116,6 @@ const Label = styled.label`
 const VisaSelect = styled.select`
   width: 100%;
   height: 42px;
-  border: none;
-  outline: none;
   background: ${({ theme }) => theme.card};
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 12px;
@@ -129,7 +127,7 @@ const VisaSelect = styled.select`
 
 
 
-function Home({ countries, search, setSearch, region, setRegion, isDark, setIsDark }) {
+function Home({ countries, search, setSearch, region, setRegion, isDark, setIsDark, favorites, toggleFavorite }) {
   return (
     <>
       <Navbar isDark={isDark} setIsDark={setIsDark} />
@@ -175,7 +173,10 @@ function Home({ countries, search, setSearch, region, setRegion, isDark, setIsDa
 
         <CountriesGrid>
           {countries.map((country) => (
-            <CountryCard key={country.name?.common} country={country} />
+            <CountryCard key={country.name?.common}
+             country={country}
+             favorites={favorites}
+             toggleFavorite={toggleFavorite} />
           ))}
         </CountriesGrid>
       </Section>

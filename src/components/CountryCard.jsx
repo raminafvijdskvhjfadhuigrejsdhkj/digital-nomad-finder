@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const CountryCardContainer = styled.div`
+  position: relative;
   background: ${({ theme }) => theme.card};
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 24px;
@@ -17,6 +18,20 @@ const CountryCardContainer = styled.div`
     border-color: ${({ theme }) => theme.primary};
     box-shadow: 0 10px 25px rgba(173, 198, 255, 0.15);
   }
+`;
+
+const FavoriteButton = styled.button`
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: ${({ active }) => (active ? "#ff4d6d" : "rgba(0,0,0,0.45)")};
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
 `;
 
 const CardImage = styled.img`
@@ -45,9 +60,20 @@ const BottomBar = styled.div`
   font-weight: 600;
 `;
 
-function CountryCard({ country }) {
+function CountryCard({ country, favorites, toggleFavorite }) {
+  const isFavorite = favorites?.some(
+    (item) => item.names.common === country.names.common
+  );
+
   return (
     <CountryCardContainer>
+      <FavoriteButton
+        active={isFavorite}
+        onClick={() => toggleFavorite(country)}
+      >
+        {isFavorite ? "♥" : "♡"}
+      </FavoriteButton>
+
       <CardImage src={country.image} alt={country.names?.common} />
 
       <CountryName>{country.names?.common || "Unknown country"}</CountryName>
