@@ -28,10 +28,11 @@ const FavoriteButton = styled.button`
   height: 42px;
   border: none;
   border-radius: 50%;
-  background: ${({ active }) => (active ? "#ff4d6d" : "rgba(0,0,0,0.45)")};
+  background: ${({ $active }) => ($active ? "#ff4d6d" : "rgba(0,0,0,0.45)")};
   color: white;
   font-size: 20px;
   cursor: pointer;
+  z-index: 2;
 `;
 
 const CardImage = styled.img`
@@ -61,24 +62,34 @@ const BottomBar = styled.div`
 `;
 
 function CountryCard({ country, favorites, toggleFavorite }) {
+  const getCountryName = (item) =>
+    item.names?.common || item.name?.common || "Unknown";
+
+  const getCapital = (item) => {
+    if (item.capital?.[0]) return item.capital[0];
+    if (item.capitals?.[0]?.name) return item.capitals[0].name;
+    if (typeof item.capitals?.[0] === "string") return item.capitals[0];
+    return "N/A";
+  };
+
   const isFavorite = favorites?.some(
-    (item) => item.names.common === country.names.common
+    (item) => getCountryName(item) === getCountryName(country)
   );
 
   return (
     <CountryCardContainer>
       <FavoriteButton
-        active={isFavorite}
+        $active={isFavorite}
         onClick={() => toggleFavorite(country)}
       >
         {isFavorite ? "♥" : "♡"}
       </FavoriteButton>
 
-      <CardImage src={country.image} alt={country.names?.common} />
+      <CardImage src={country.image} alt={getCountryName(country)} />
 
-      <CountryName>{country.names?.common || "Unknown country"}</CountryName>
+      <CountryName>{getCountryName(country)}</CountryName>
 
-      <Info>Capital: {country.capitals?.[0]?.name || "N/A"}</Info>
+      <Info>Capital: {getCapital(country)}</Info>
       <Info>Region: {country.region || "N/A"}</Info>
       <Info>Population: {country.population?.toLocaleString() || "N/A"}</Info>
 

@@ -11,6 +11,7 @@ function App({ isDark, setIsDark }) {
   const [region, setRegion] = useState("");
   const [loading, setLoading] = useState(true);
   const [showSlowLoading, setShowSlowLoading] = useState(false);
+  
 
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem("favorites");
@@ -21,14 +22,20 @@ function App({ isDark, setIsDark }) {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
+  function getCountryName(country) {
+    return country.names?.common || country.name?.common || "Unknown";
+  }
+
   function toggleFavorite(country) {
+    const countryName = getCountryName(country);
+
     const exists = favorites.some(
-      (item) => item.names.common === country.names.common
+      (item) => getCountryName(item) === countryName
     );
 
     if (exists) {
       setFavorites(
-        favorites.filter((item) => item.names.common !== country.names.common)
+        favorites.filter((item) => getCountryName(item) !== countryName)
       );
     } else {
       setFavorites([...favorites, country]);
@@ -40,18 +47,28 @@ function App({ isDark, setIsDark }) {
       setShowSlowLoading(true);
     }, 2000);
 
-    fetch("https://api.restcountries.com/countries/v5?limit=100", {
-      headers: {
-        Authorization: "Bearer rc_live_2a7c920a16f444e794f018ef8399666a",
-      },
-    })
+    fetch("https://api.restcountries.com/countries/v5", 
+      {headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_REST_COUNTRIES_API_KEY}`,
+      }},
+    )
       .then((res) => res.json())
       .then((data) => {
-        const countriesWithImages = data.data.objects.map((country) => ({
-          ...country,
-          image: `https://picsum.photos/seed/${country.names.common}/600/400`,
-        }));
+        const countriesArray = Array.isArray(data)
+          ? data
+          : data.data?.objects || [];
 
+        const countriesWithImages = countriesArray.map((country) => {
+          const countryName =
+            country.names?.common || country.name?.common || "country";
+
+          return {
+            ...country,
+            image: `https://picsum.photos/seed/${countryName}/600/400`,
+          };
+        });
+         console.log("Countries:", countriesWithImages);
+         console.log("Length:", countriesWithImages.length);
         setCountries(countriesWithImages);
       })
       .catch((error) => {
@@ -66,11 +83,14 @@ function App({ isDark, setIsDark }) {
     return () => clearTimeout(slowTimer);
   }, []);
 
-  const filteredCountries = countries.filter(
-    (country) =>
-      country.names.common.toLowerCase().includes(search.toLowerCase()) &&
+  const filteredCountries = countries.filter((country) => {
+    const countryName = getCountryName(country);
+
+    return (
+      countryName.toLowerCase().includes(search.toLowerCase()) &&
       (region === "" || country.region === region)
-  );
+    );
+  });
 
   if (loading && showSlowLoading) {
     return <Loading />;
@@ -98,10 +118,7 @@ function App({ isDark, setIsDark }) {
       <Route
         path="/favorites"
         element={
-          <Favorites
-            favorites={favorites}
-            toggleFavorite={toggleFavorite}
-          />
+          <Favorites favorites={favorites} toggleFavorite={toggleFavorite} />
         }
       />
     </Routes>

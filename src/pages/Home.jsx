@@ -122,7 +122,6 @@ const VisaSelect = styled.select`
   color: ${({ theme }) => theme.text};
   outline: none;
   padding: 0 14px;
-}
   `;
 
 
@@ -173,7 +172,7 @@ function Home({ countries, search, setSearch, region, setRegion, isDark, setIsDa
 
         <CountriesGrid>
           {countries.map((country) => (
-            <CountryCard key={country.name?.common}
+            <CountryCard key={country.names?.common || country.name?.common}
              country={country}
              favorites={favorites}
              toggleFavorite={toggleFavorite} />
