@@ -11,7 +11,6 @@ function App({ isDark, setIsDark }) {
   const [region, setRegion] = useState("");
   const [loading, setLoading] = useState(true);
   const [showSlowLoading, setShowSlowLoading] = useState(false);
-  
 
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem("favorites");
@@ -23,7 +22,7 @@ function App({ isDark, setIsDark }) {
   }, [favorites]);
 
   function getCountryName(country) {
-    return country.names?.common || country.name?.common || "Unknown";
+    return country.name?.common || country.country || "Unknown";
   }
 
   function toggleFavorite(country) {
@@ -47,28 +46,25 @@ function App({ isDark, setIsDark }) {
       setShowSlowLoading(true);
     }, 2000);
 
-    fetch("https://api.restcountries.com/countries/v5", 
-      {headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_REST_COUNTRIES_API_KEY}`,
-      }},
-    )
+    fetch("https://countriesnow.space/api/v0.1/countries")
       .then((res) => res.json())
       .then((data) => {
-        const countriesArray = Array.isArray(data)
-          ? data
-          : data.data?.objects || [];
+        const countriesArray = data.data || [];
 
         const countriesWithImages = countriesArray.map((country) => {
-          const countryName =
-            country.names?.common || country.name?.common || "country";
+          const countryName = country.country || "country";
 
           return {
-            ...country,
+            name: {
+              common: countryName,
+            },
+            capital: country.cities?.[0] || "N/A",
+            region: "All",
+            population: "N/A",
             image: `https://picsum.photos/seed/${countryName}/600/400`,
           };
         });
-         console.log("Countries:", countriesWithImages);
-         console.log("Length:", countriesWithImages.length);
+
         setCountries(countriesWithImages);
       })
       .catch((error) => {
@@ -88,7 +84,7 @@ function App({ isDark, setIsDark }) {
 
     return (
       countryName.toLowerCase().includes(search.toLowerCase()) &&
-      (region === "" || country.region === region)
+      (region === "" || region === "All" || country.region === region)
     );
   });
 
@@ -100,6 +96,23 @@ function App({ isDark, setIsDark }) {
     <Routes>
       <Route
         path="/"
+        element={
+          <Home
+            countries={filteredCountries}
+            search={search}
+            setSearch={setSearch}
+            region={region}
+            setRegion={setRegion}
+            isDark={isDark}
+            setIsDark={setIsDark}
+            favorites={favorites}
+            toggleFavorite={toggleFavorite}
+          />
+        }
+      />
+
+      <Route
+        path="/countries"
         element={
           <Home
             countries={filteredCountries}

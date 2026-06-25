@@ -16,9 +16,6 @@ const Input = styled.input`
 `;
 
 
-
-
-
 function SearchBar({ search, setSearch }) {
     return (
        <Input

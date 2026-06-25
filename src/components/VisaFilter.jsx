@@ -14,7 +14,6 @@ const SelectButton = styled.button`
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 12px;
   padding: 0 14px;
-  outline: none;
   cursor: pointer;
 
   display: flex;
@@ -48,39 +47,29 @@ const Option = styled.button`
   }
 `;
 
-function RegionFilter({ region, setRegion }) {
+function VisaFilter() {
   const [open, setOpen] = useState(false);
+  const [visa, setVisa] = useState("Digital Nomad");
 
-  const options = [
-    { value: "", label: "All Regions" },
-    { value: "Europe", label: "Europe" },
-    { value: "Asia", label: "Asia" },
-  ];
-
-  const selectedLabel =
-    options.find((option) => option.value === region)?.label || "All Regions";
+  const options = ["Digital Nomad", "Tourist", "Work Visa"];
 
   function handleSelect(value) {
-    setRegion(value);
+    setVisa(value);
     setOpen(false);
   }
 
   return (
     <Wrapper>
       <SelectButton type="button" onClick={() => setOpen(!open)}>
-        {selectedLabel}
+        {visa}
         <span>⌄</span>
       </SelectButton>
 
       {open && (
         <Dropdown>
           {options.map((option) => (
-            <Option
-              key={option.label}
-              type="button"
-              onClick={() => handleSelect(option.value)}
-            >
-              {option.label}
+            <Option key={option} type="button" onClick={() => handleSelect(option)}>
+              {option}
             </Option>
           ))}
         </Dropdown>
@@ -89,4 +78,4 @@ function RegionFilter({ region, setRegion }) {
   );
 }
 
-export default RegionFilter;
+export default VisaFilter;

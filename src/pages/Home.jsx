@@ -4,6 +4,8 @@ import Navbar from "../components/Navbar";
 import CountryCard from "../components/CountryCard";
 import SearchBar from "../components/SearchBar";
 import RegionFilter from "../components/RegionFilter";
+import VisaFilter from "../components/VisaFilter";
+
 
 const Hero = styled.section`
   min-height: 520px;
@@ -48,12 +50,11 @@ const SearchPanel = styled.div`
   border-radius: 28px;
   background: ${({ theme }) => theme.card};
   border: 1px solid ${({ theme }) => theme.border};
+
   display: grid;
   grid-template-columns: 2fr 1fr 1fr auto;
   gap: 24px;
   align-items: end;
-
- 
 
   @media (max-width: 800px) {
     grid-template-columns: 1fr;
@@ -62,7 +63,7 @@ const SearchPanel = styled.div`
 
 
 const SearchButton = styled.button`
- width: 120px;
+  width: 120px;
   height: 42px;
   border: none;
   border-radius: 12px;
@@ -70,6 +71,10 @@ const SearchButton = styled.button`
   color: #002e6a;
   cursor: pointer;
   font-weight: 600;
+
+  @media (max-width: 800px) {
+    width: 100%;
+  }
 `;
 
 const Section = styled.section`
@@ -102,8 +107,8 @@ const CountriesGrid = styled.div`
   }
 `;
 const SearchField = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   text-align: left;
 `;
@@ -142,28 +147,27 @@ function Home({ countries, search, setSearch, region, setRegion, isDark, setIsDa
           Explore the best countries for remote work, travel, and lifestyle.
         </HeroText>
 
-        <SearchPanel>
+
+<SearchPanel>
   <SearchField>
-    <Label>Search Destination</Label>
-      <SearchBar search={search} setSearch={setSearch} />
+    <Label htmlFor="search">Search Destination</Label>
+    <SearchBar search={search} setSearch={setSearch} />
   </SearchField>
 
   <SearchField>
-    <Label>Region</Label>
-        <RegionFilter region={region} setRegion={setRegion} />
+    <Label htmlFor="region">Region</Label>
+    <RegionFilter region={region} setRegion={setRegion} />
+  </SearchField>
+
+ <SearchField>
+  <Label>Visa Type</Label>
+  <VisaFilter />
 </SearchField>
 
-  <SearchField>
-    <Label>Visa Type</Label>
- <VisaSelect>
-      <option>Digital Nomad</option>
-      <option>Tourist</option>
-      <option>Work Visa</option>
-    </VisaSelect>
-  </SearchField>
-  
-    <SearchButton>Search</SearchButton>
+  <SearchButton>Search</SearchButton>
 </SearchPanel>
+
+
       </Hero>
 
       <Section>
