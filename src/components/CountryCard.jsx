@@ -1,4 +1,9 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
+import { getCountryImage } from "../api/images";
+import CountryRating from "./CountryRating";
 
 const CountryCardContainer = styled.div`
   position: relative;
@@ -10,8 +15,9 @@ const CountryCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 360px;
+  min-height: 430px;
   color: ${({ theme }) => theme.text};
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-5px);
@@ -35,11 +41,19 @@ const FavoriteButton = styled.button`
   z-index: 2;
 `;
 
+const RatingPlace = styled.div`
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  z-index: 2;
+`;
+
 const CardImage = styled.img`
   width: 100%;
   height: 180px;
   object-fit: cover;
   border-radius: 16px;
+  background: #111;
 `;
 
 const CountryName = styled.h3`
@@ -52,50 +66,108 @@ const Info = styled.p`
   font-size: 14px;
 `;
 
+const Tags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+`;
+
+const Tag = styled.span`
+  font-size: 12px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(173, 198, 255, 0.1);
+  color: ${({ theme }) => theme.text};
+  border: 1px solid ${({ theme }) => theme.border};
+`;
+
 const BottomBar = styled.div`
   margin-top: auto;
   display: flex;
   justify-content: space-between;
+  gap: 10px;
   padding-top: 16px;
   color: ${({ theme }) => theme.text};
   font-weight: 600;
 `;
 
-function CountryCard({ country, favorites, toggleFavorite }) {
-  const getCountryName = (item) =>
-    item.names?.common || item.name?.common || "Unknown";
+function CountryCard({ country, favorites = [], toggleFavorite }) {
+  const navigate = useNavigate();
+  const [image, setImage] = useState("");
+  const [imageError, setImageError] = useState(false);
 
-  const getCapital = (item) => {
-    if (item.capital?.[0]) return item.capital[0];
-    if (item.capitals?.[0]?.name) return item.capitals[0].name;
-    if (typeof item.capitals?.[0] === "string") return item.capitals[0];
-    return "N/A";
-  };
+  const countryName = country.name?.common || country.name || "Unknown";
 
-  const isFavorite = favorites?.some(
-    (item) => getCountryName(item) === getCountryName(country)
-  );
+  const capital = Array.isArray(country.capital)
+    ? country.capital[0]
+    : country.capital || "N/A";
+
+  const flag = country.flags?.png || country.flag || "";
+  const countrySlug = countryName.toLowerCase().replaceAll(" ", "-");
+
+  useEffect(() => {
+    async function loadImage() {
+      const photo = await getCountryImage(`${capital} ${countryName} city`);
+      setImage(photo);
+      setImageError(false);
+    }
+
+    if (capital && capital !== "N/A") {
+      loadImage();
+    }
+  }, [capital, countryName]);
+
+  const isFavorite = favorites.some((item) => {
+    const itemName = item.name?.common || item.name || "Unknown";
+    return itemName === countryName;
+  });
+
+  const imageSrc = image && !imageError ? image : flag;
 
   return (
-    <CountryCardContainer>
+    <CountryCardContainer onClick={() => navigate(`/country/${countrySlug}`)}>
       <FavoriteButton
         $active={isFavorite}
-        onClick={() => toggleFavorite(country)}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleFavorite(country);
+        }}
       >
         {isFavorite ? "♥" : "♡"}
       </FavoriteButton>
 
-      <CardImage src={country.image} alt={getCountryName(country)} />
+      <RatingPlace>
+        <CountryRating
+          countryName={countryName}
+          initialRatings={country.ratings || []}
+        />
+      </RatingPlace>
 
-      <CountryName>{getCountryName(country)}</CountryName>
+      <CardImage
+        src={imageSrc}
+        alt={countryName}
+        onError={() => setImageError(true)}
+      />
 
-      <Info>Capital: {getCapital(country)}</Info>
+      <CountryName>{countryName}</CountryName>
+
+      <Info>Capital: {capital}</Info>
       <Info>Region: {country.region || "N/A"}</Info>
-      <Info>Population: {country.population?.toLocaleString() || "N/A"}</Info>
+      <Info>
+        Population:{" "}
+        {country.population ? Number(country.population).toLocaleString() : "N/A"}
+      </Info>
+
+      <Tags>
+        <Tag>Safety: {country.safety || "N/A"}</Tag>
+        <Tag>{country.climate || "N/A"}</Tag>
+        <Tag>{country.visaFriendly ? "Visa Friendly" : "Visa Required"}</Tag>
+      </Tags>
 
       <BottomBar>
-        <span>150 Mbps</span>
-        <span>$2200/mo</span>
+        <span>{country.internet || "N/A"} Mbps</span>
+        <span>${country.cost || "N/A"}/mo</span>
       </BottomBar>
     </CountryCardContainer>
   );

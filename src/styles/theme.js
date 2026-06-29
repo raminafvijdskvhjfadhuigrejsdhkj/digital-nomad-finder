@@ -1,19 +1,36 @@
-const theme = {
-  dark: {
-    background: "#050505",
-    text: "#ffffff",
-    card: "rgba(255,255,255,0.04)",
-    border: "rgba(255,255,255,0.08)",
-    primary: "#adc6ff",
-  },
-
-  light: {
-    background: "#ffffff",
-    text: "#111111",
-    card: "#f5f5f5",
-    border: "rgba(0,0,0,0.1)",
-    primary: "#3b82f6",
-  },
+export const darkTheme = {
+  background: "#050505",
+  card: "rgba(255, 255, 255, 0.04)",
+  cardHover: "rgba(255, 255, 255, 0.06)",
+  text: "#e5e2e1",
+  muted: "#c2c6d6",
+  border: "rgba(255, 255, 255, 0.08)",
+  borderBright: "rgba(173, 198, 255, 0.35)",
+  primary: "#adc6ff",
+  primaryDark: "#002e6a",
+  secondary: "#c6c4df",
+  purple: "#1a1a2e",
+  surface: "#131313",
+  surfaceLow: "#1c1b1b",
+  surfaceHigh: "#2a2a2a",
+  error: "#ffb4ab",
 };
 
-export default theme;
+export const lightTheme = {
+  background: "#f7f7f8",
+  card: "rgba(255, 255, 255, 0.8)",
+  cardHover: "#ffffff",
+  text: "#131313",
+  muted: "#424754",
+  border: "rgba(0, 0, 0, 0.08)",
+  borderBright: "#adc6ff",
+  primary: "#005ac2",
+  primaryDark: "#ffffff",
+  secondary: "#47475d",
+  purple: "#e2e0fc",
+  surface: "#ffffff",
+  surfaceLow: "#f1f1f3",
+  surfaceHigh: "#e5e2e1",
+  error: "#93000a",
+};
+

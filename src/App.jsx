@@ -4,6 +4,8 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Favorites from "./pages/Favorites";
 import Loading from "./pages/Loading";
+import CountryDetails from "./pages/CountryDetails";
+import { countries as countriesData } from "./data/countries";
 
 function App({ isDark, setIsDark }) {
   const [countries, setCountries] = useState([]);
@@ -21,8 +23,20 @@ function App({ isDark, setIsDark }) {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
+  useEffect(() => {
+    const slowTimer = setTimeout(() => {
+      setShowSlowLoading(true);
+    }, 2000);
+
+    setCountries(countriesData);
+    setLoading(false);
+    setShowSlowLoading(false);
+
+    return () => clearTimeout(slowTimer);
+  }, []);
+
   function getCountryName(country) {
-    return country.name?.common || country.country || "Unknown";
+    return country.name?.common || country.name || "Unknown";
   }
 
   function toggleFavorite(country) {
@@ -40,44 +54,6 @@ function App({ isDark, setIsDark }) {
       setFavorites([...favorites, country]);
     }
   }
-
-  useEffect(() => {
-    const slowTimer = setTimeout(() => {
-      setShowSlowLoading(true);
-    }, 2000);
-
-    fetch("https://countriesnow.space/api/v0.1/countries")
-      .then((res) => res.json())
-      .then((data) => {
-        const countriesArray = data.data || [];
-
-        const countriesWithImages = countriesArray.map((country) => {
-          const countryName = country.country || "country";
-
-          return {
-            name: {
-              common: countryName,
-            },
-            capital: country.cities?.[0] || "N/A",
-            region: "All",
-            population: "N/A",
-            image: `https://picsum.photos/seed/${countryName}/600/400`,
-          };
-        });
-
-        setCountries(countriesWithImages);
-      })
-      .catch((error) => {
-        console.error("Error fetching countries:", error);
-      })
-      .finally(() => {
-        clearTimeout(slowTimer);
-        setLoading(false);
-        setShowSlowLoading(false);
-      });
-
-    return () => clearTimeout(slowTimer);
-  }, []);
 
   const filteredCountries = countries.filter((country) => {
     const countryName = getCountryName(country);
@@ -129,9 +105,26 @@ function App({ isDark, setIsDark }) {
       />
 
       <Route
+  path="/country/:name"
+  element={
+    <CountryDetails
+      isDark={isDark}
+      setIsDark={setIsDark}
+      favorites={favorites}
+      toggleFavorite={toggleFavorite}
+    />
+  }
+/>
+
+      <Route
         path="/favorites"
         element={
-          <Favorites favorites={favorites} toggleFavorite={toggleFavorite} />
+          <Favorites
+            favorites={favorites}
+            toggleFavorite={toggleFavorite}
+            isDark={isDark}
+            setIsDark={setIsDark}
+          />
         }
       />
     </Routes>

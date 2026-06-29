@@ -1,30 +1,22 @@
-import { StrictMode, useState, useEffect } from "react";
+import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
 
 import App from "./App.jsx";
-
-import { ThemeProvider } from "styled-components";
 import GlobalStyles from "./styles/GlobalStyles";
-import theme from "./styles/theme";
+import { darkTheme, lightTheme } from "./styles/theme";
 
 function Root() {
-  const [isDark, setIsDark] = useState(() => {
-    const savedTheme = localStorage.getItem("DarkMode");
-    return savedTheme ? JSON.parse(savedTheme) : true;
-  });
-
-  useEffect(() => {
-    localStorage.setItem("DarkMode", JSON.stringify(isDark));
-  }, [isDark]);
+  const [isDark, setIsDark] = useState(true);
 
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={isDark ? theme.dark : theme.light}>
-        <GlobalStyles />
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+      <GlobalStyles />
+      <BrowserRouter>
         <App isDark={isDark} setIsDark={setIsDark} />
-      </ThemeProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
