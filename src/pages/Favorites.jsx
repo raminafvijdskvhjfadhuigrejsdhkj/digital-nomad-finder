@@ -1,5 +1,7 @@
 import Navbar from "../components/Navbar";
 import CountryCard from "../components/CountryCard";
+import Footer from "../components/Footer";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 
 function Favorites({ favorites = [], toggleFavorite, isDark, setIsDark }) {
   return (
@@ -30,11 +32,15 @@ function Favorites({ favorites = [], toggleFavorite, isDark, setIsDark }) {
                   favorites={favorites}
                   toggleFavorite={toggleFavorite}
                 />
+                
+                
               );
             })}
           </div>
         )}
       </div>
+      <Footer />
+      <ScrollToTopButton />
     </>
   );
 }

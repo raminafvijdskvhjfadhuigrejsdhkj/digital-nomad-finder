@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar";
 import CountryCard from "../components/CountryCard";
 import SearchBar from "../components/SearchBar";
 import CustomSelect from "../components/CustomSelect";
+import Footer from "../components/Footer";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 
 const Hero = styled.section`
   min-height: 520px;
@@ -340,7 +342,10 @@ function Home({
           })}
         </CountriesGrid>
       </Section>
+      <Footer />
+      <ScrollToTopButton />
     </>
+    
   );
 }
 
