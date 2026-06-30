@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -20,6 +20,11 @@ const SelectButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+const Arrow = styled.span`
+  transition: transform 0.3s ease;
+  transform: rotate(${({ $open }) => ($open ? "180deg" : "0deg")});
 `;
 
 const Dropdown = styled.div`
@@ -50,11 +55,16 @@ const Option = styled.button`
 
 function RegionFilter({ region, setRegion }) {
   const [open, setOpen] = useState(false);
+  const wrapperRef = useRef(null);
 
   const options = [
     { value: "", label: "All Regions" },
     { value: "Europe", label: "Europe" },
     { value: "Asia", label: "Asia" },
+    { value: "Africa", label: "Africa" },
+    { value: "North America", label: "North America" },
+    { value: "South America", label: "South America" },
+    { value: "Oceania", label: "Oceania" },
   ];
 
   const selectedLabel =
@@ -65,11 +75,25 @@ function RegionFilter({ region, setRegion }) {
     setOpen(false);
   }
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <Wrapper>
+    <Wrapper ref={wrapperRef}>
       <SelectButton type="button" onClick={() => setOpen(!open)}>
         {selectedLabel}
-        <span>⌄</span>
+        <Arrow $open={open}>⌄</Arrow>
       </SelectButton>
 
       {open && (

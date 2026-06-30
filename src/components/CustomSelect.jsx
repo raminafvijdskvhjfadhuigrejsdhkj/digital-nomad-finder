@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -8,12 +8,13 @@ const Wrapper = styled.div`
 
 const SelectButton = styled.button`
   width: 100%;
-  height: 42px;
+  height: 46px;
   background: ${({ theme }) => theme.card};
   color: ${({ theme }) => theme.text};
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 12px;
   padding: 0 14px;
+  outline: none;
   cursor: pointer;
 
   display: flex;
@@ -22,26 +23,35 @@ const SelectButton = styled.button`
 `;
 
 const Arrow = styled.span`
-  transition: transform 0.3s ease;
-  transform: rotate(${({ $open }) => ($open ? "180deg" : "0deg")});
+  display: inline-block;
+  transition: transform 0.25s ease;
+  transform: ${({ $open }) => ($open ? "rotate(180deg)" : "rotate(0deg)")};
 `;
+
 
 const Dropdown = styled.div`
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
   width: 100%;
-  background: ${({ theme }) => theme.card};
+
+  background: #1a1d29; /* НЕ transparent */
+  backdrop-filter: none;
+
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 12px;
   overflow: hidden;
-  z-index: 1000;
+
+  z-index: 99999;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
 `;
 
 const Option = styled.button`
   width: 100%;
   padding: 12px 14px;
-  background: transparent;
+  background: ${({ $active }) =>
+    $active ? "rgba(173, 198, 255, 0.14)" : "transparent"};
   border: none;
   color: ${({ theme }) => theme.text};
   text-align: left;
@@ -52,27 +62,24 @@ const Option = styled.button`
   }
 `;
 
-function VisaFilter() {
+function CustomSelect({ value, onChange, options }) {
   const [open, setOpen] = useState(false);
-  const [visa, setVisa] = useState("Digital Nomad");
   const wrapperRef = useRef(null);
 
-  const options = ["Digital Nomad", "Tourist", "Work Visa"];
+  const selectedLabel =
+    options.find((option) => option.value === value)?.label || options[0].label;
 
-  function handleSelect(value) {
-    setVisa(value);
+  const handleSelect = (newValue) => {
+    onChange(newValue);
     setOpen(false);
-  }
+  };
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target)
-      ) {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setOpen(false);
       }
-    }
+    };
 
     document.addEventListener("mousedown", handleClickOutside);
 
@@ -83,8 +90,8 @@ function VisaFilter() {
 
   return (
     <Wrapper ref={wrapperRef}>
-      <SelectButton type="button" onClick={() => setOpen(!open)}>
-        {visa}
+      <SelectButton type="button" onClick={() => setOpen((prev) => !prev)}>
+        {selectedLabel}
         <Arrow $open={open}>⌄</Arrow>
       </SelectButton>
 
@@ -92,11 +99,12 @@ function VisaFilter() {
         <Dropdown>
           {options.map((option) => (
             <Option
-              key={option}
+              key={option.label}
               type="button"
-              onClick={() => handleSelect(option)}
+              $active={option.value === value}
+              onClick={() => handleSelect(option.value)}
             >
-              {option}
+              {option.label}
             </Option>
           ))}
         </Dropdown>
@@ -105,4 +113,4 @@ function VisaFilter() {
   );
 }
 
-export default VisaFilter;
+export default CustomSelect;
