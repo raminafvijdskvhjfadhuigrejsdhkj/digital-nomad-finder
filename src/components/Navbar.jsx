@@ -9,8 +9,8 @@ const Nav = styled.nav`
   align-items: center;
   justify-content: space-between;
 
-  background: #111827; /* solid color */
-  border-bottom: 1px solid #2a2a35;
+  background: ${({ theme }) => theme.card};
+  border-bottom: 1px solid ${({ theme }) => theme.border};
 
   position: sticky;
   top: 0;

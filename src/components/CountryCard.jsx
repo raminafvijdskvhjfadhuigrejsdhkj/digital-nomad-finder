@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { getCountryImage } from "../api/images";
 import CountryRating from "./CountryRating";
+import GlassCard from "./ui/GlassCard";
+import useCountryImage from "../hooks/useCountryImage";
 
-const CountryCardContainer = styled.div`
+const CountryCardContainer = styled(GlassCard)`
   position: relative;
-  background: ${({ theme }) => theme.card};
-  border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 24px;
   padding: 20px;
   transition: all 0.3s ease;
   display: flex;
@@ -94,7 +92,6 @@ const BottomBar = styled.div`
 
 function CountryCard({ country, favorites = [], toggleFavorite }) {
   const navigate = useNavigate();
-  const [image, setImage] = useState("");
   const [imageError, setImageError] = useState(false);
 
   const countryName = country.name?.common || country.name || "Unknown";
@@ -106,17 +103,7 @@ function CountryCard({ country, favorites = [], toggleFavorite }) {
   const flag = country.flags?.png || country.flag || "";
   const countrySlug = countryName.toLowerCase().replaceAll(" ", "-");
 
-  useEffect(() => {
-    async function loadImage() {
-      const photo = await getCountryImage(`${capital} ${countryName} city`);
-      setImage(photo);
-      setImageError(false);
-    }
-
-    if (capital && capital !== "N/A") {
-      loadImage();
-    }
-  }, [capital, countryName]);
+  const image = useCountryImage(`${capital} ${countryName} city`);
 
   const isFavorite = favorites.some((item) => {
     const itemName = item.name?.common || item.name || "Unknown";
@@ -156,7 +143,9 @@ function CountryCard({ country, favorites = [], toggleFavorite }) {
       <Info>Region: {country.region || "N/A"}</Info>
       <Info>
         Population:{" "}
-        {country.population ? Number(country.population).toLocaleString() : "N/A"}
+        {country.population
+          ? Number(country.population).toLocaleString()
+          : "N/A"}
       </Info>
 
       <Tags>

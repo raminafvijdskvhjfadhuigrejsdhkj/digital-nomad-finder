@@ -1,12 +1,12 @@
-import Navbar from "../components/Navbar";
+
 import CountryCard from "../components/CountryCard";
-import Footer from "../components/Footer";
-import ScrollToTopButton from "../components/ScrollToTopButton";
+import Layout from "../components/Layout";
+
 
 function Favorites({ favorites = [], toggleFavorite, isDark, setIsDark }) {
   return (
     <>
-      <Navbar isDark={isDark} setIsDark={setIsDark} />
+      <Layout isDark={isDark} setIsDark={setIsDark} >
 
       <div style={{ padding: "40px" }}>
         <h1>My Favorite Countries</h1>
@@ -39,8 +39,7 @@ function Favorites({ favorites = [], toggleFavorite, isDark, setIsDark }) {
           </div>
         )}
       </div>
-      <Footer />
-      <ScrollToTopButton />
+      </Layout>
     </>
   );
 }
