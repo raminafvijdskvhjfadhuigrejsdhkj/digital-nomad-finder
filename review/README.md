@@ -49,6 +49,17 @@
 | 24 | Компоненты общаются через `localStorage` | D. Связь | [2026-06-30-javascript-react-fundamentals.md](2026-06-30-javascript-react-fundamentals.md) | 🔴 открыто |
 | 25 | Хардкод цветов ломает светлую тему | E. Стили | [2026-06-30-javascript-react-fundamentals.md](2026-06-30-javascript-react-fundamentals.md) | 🔴 открыто |
 
+**Итерация 4 — React: декомпозиция и архитектура компонентов**
+
+| # | Тема | Раздел | Файл | Статус |
+|---|------|--------|------|--------|
+| 26 | God-компоненты (`CountryDetails`, `Home`) | Декомпозиция | [2026-06-30-react-decomposition.md](2026-06-30-react-decomposition.md) | 🔴 открыто |
+| 27 | Стили смешаны с логикой | Декомпозиция | [2026-06-30-react-decomposition.md](2026-06-30-react-decomposition.md) | 🔴 открыто |
+| 28 | Дублирование каркаса → `Layout` | Архитектура | [2026-06-30-react-decomposition.md](2026-06-30-react-decomposition.md) | 🔴 открыто |
+| 29 | Нет UI-примитивов | Переиспользование | [2026-06-30-react-decomposition.md](2026-06-30-react-decomposition.md) | 🔴 открыто |
+| 30 | Логика не вынесена → кастомные хуки | Хуки | [2026-06-30-react-decomposition.md](2026-06-30-react-decomposition.md) | 🔴 открыто |
+| 31 | Конфиг фильтров в разметке | Чистота | [2026-06-30-react-decomposition.md](2026-06-30-react-decomposition.md) | 🔴 открыто |
+
 Легенда: 🔴 открыто · 🟡 в работе/частично · 🟢 закрыто
 
 _Актуализировано 2026-06-30. Стажёр закрыл большинство пунктов итераций 1–2 👏_
