@@ -21,7 +21,7 @@ const RatingRow = styled.div`
   margin-bottom: 16px;
 `;
 
-function CountryReview({ countryName }) {
+function CountryReview({ countryName, updateCountryRating }) {
   const [review, setReview] = useState(() => {
     const saved = localStorage.getItem(`review-${countryName}`);
 
@@ -42,8 +42,8 @@ function CountryReview({ countryName }) {
     const average =
       values.reduce((sum, value) => sum + value, 0) / values.length;
 
-    localStorage.setItem(`ratings-${countryName}`, JSON.stringify([average]));
-  }, [review, countryName]);
+    updateCountryRating(countryName, average);
+  }, [review, countryName, updateCountryRating]);
 
   const handleChange = (name, value) => {
     if (value === null) return;

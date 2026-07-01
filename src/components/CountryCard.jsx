@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import CountryRating from "./CountryRating";
 import GlassCard from "./ui/GlassCard";
-import useCountryImage from "../hooks/useCountryImage";
+import { getCountryName } from "../utils/getCountryName";
+
 
 const CountryCardContainer = styled(GlassCard)`
   position: relative;
@@ -90,27 +90,28 @@ const BottomBar = styled.div`
   font-weight: 600;
 `;
 
-function CountryCard({ country, favorites = [], toggleFavorite }) {
+function CountryCard({
+  country,
+  favorites = [],
+  toggleFavorite,
+  rating,
+}) {
   const navigate = useNavigate();
-  const [imageError, setImageError] = useState(false);
 
-  const countryName = country.name?.common || country.name || "Unknown";
+  const countryName = getCountryName(country);
 
   const capital = Array.isArray(country.capital)
     ? country.capital[0]
     : country.capital || "N/A";
 
-  const flag = country.flags?.png || country.flag || "";
+  const flag = country.flag || "";
   const countrySlug = countryName.toLowerCase().replaceAll(" ", "-");
 
-  const image = useCountryImage(`${capital} ${countryName} city`);
 
   const isFavorite = favorites.some((item) => {
-    const itemName = item.name?.common || item.name || "Unknown";
+    const itemName = getCountryName(item);
     return itemName === countryName;
   });
-
-  const imageSrc = image && !imageError ? image : flag;
 
   return (
     <CountryCardContainer onClick={() => navigate(`/country/${countrySlug}`)}>
@@ -126,15 +127,14 @@ function CountryCard({ country, favorites = [], toggleFavorite }) {
 
       <RatingPlace>
         <CountryRating
-          countryName={countryName}
+          rating={rating}
           initialRatings={country.ratings || []}
         />
       </RatingPlace>
 
       <CardImage
-        src={imageSrc}
+        src={flag}
         alt={countryName}
-        onError={() => setImageError(true)}
       />
 
       <CountryName>{countryName}</CountryName>

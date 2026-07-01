@@ -1,6 +1,8 @@
 import { useState } from "react";
 
-function useCountryFilters(countries, search, setSearch, region, setRegion) {
+function useCountryFilters(countries) {
+  const [search, setSearch] = useState("");
+  const [region, setRegion] = useState("");
   const [budget, setBudget] = useState("");
   const [internet, setInternet] = useState("");
   const [safety, setSafety] = useState("");
@@ -18,13 +20,14 @@ function useCountryFilters(countries, search, setSearch, region, setRegion) {
   };
 
   const filteredCountries = countries.filter((country) => {
-    const countryName = country.name?.common || country.name || "";
+    const countryName = country.name || "";
 
     const matchesSearch = countryName
       .toLowerCase()
       .includes(search.toLowerCase());
 
-    const matchesRegion = region ? country.region === region : true;
+    const matchesRegion =
+      region === "" || region === "All" || country.region === region;
 
     const matchesBudget =
       budget === ""
@@ -45,7 +48,9 @@ function useCountryFilters(countries, search, setSearch, region, setRegion) {
         : country.internet >= 150;
 
     const matchesSafety = safety === "" ? true : country.safety === safety;
+
     const matchesClimate = climate === "" ? true : country.climate === climate;
+
     const matchesVisa = !visaFriendly ? true : country.visaFriendly === true;
 
     return (
@@ -60,6 +65,10 @@ function useCountryFilters(countries, search, setSearch, region, setRegion) {
   });
 
   return {
+    search,
+    setSearch,
+    region,
+    setRegion,
     budget,
     setBudget,
     internet,

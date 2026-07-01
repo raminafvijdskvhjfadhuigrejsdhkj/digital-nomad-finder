@@ -1,6 +1,3 @@
-
-
-import { useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import styled from "styled-components";
 
@@ -19,17 +16,12 @@ const RatingNumber = styled.span`
   font-weight: 600;
 `;
 
-function CountryRating({ countryName, initialRatings = [] }) {
-  const savedRatings = JSON.parse(
-    localStorage.getItem(`ratings-${countryName}`)
-  );
-
-  const [ratings] = useState(savedRatings || initialRatings);
-
+function CountryRating({ rating, initialRatings = [] }) {
   const average =
-    ratings.length > 0
-      ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
-      : 0;
+    rating ??
+    (initialRatings.length > 0
+      ? initialRatings.reduce((sum, r) => sum + r, 0) / initialRatings.length
+      : 0);
 
   return (
     <RatingBadge>

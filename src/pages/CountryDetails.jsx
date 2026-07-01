@@ -11,6 +11,7 @@ import CountryVerdict from "../components/CountryVerdict";
 import CountryClimate from "../components/CountryClimate";
 import useWeather from "../hooks/useWeather";
 import useCountryImage from "../hooks/useCountryImage";
+import { getCountryName } from "../utils/getCountryName";
 
 const Page = styled.div`
   min-height: 100vh;
@@ -51,16 +52,21 @@ const NotFound = styled.section`
   }
 `;
 
-function CountryDetails({ isDark, setIsDark, favorites = [], toggleFavorite }) {
+function CountryDetails({
+  isDark,
+  setIsDark,
+  favorites = [],
+  toggleFavorite,
+  updateCountryRating,
+}) {
   const { name } = useParams();
-  
 
   const country = countriesData.find((item) => {
-    const countryName = item.name?.common || item.name || "";
+    const countryName = getCountryName(item);
     return countryName.toLowerCase().replaceAll(" ", "-") === name;
   });
 
-  const countryName = country?.name?.common || country?.name || "Unknown";
+  const countryName = getCountryName(country);
 
   const capital = Array.isArray(country?.capital)
     ? country.capital[0]
@@ -69,10 +75,10 @@ function CountryDetails({ isDark, setIsDark, favorites = [], toggleFavorite }) {
   const weather = useWeather(capital);
   const heroImage = useCountryImage(capital);
 
-  const flag = country?.flags?.png || country?.flag || "";
+  const flag = country?.flag || "";
 
   const isFavorite = favorites.some((item) => {
-    const itemName = item.name?.common || item.name || "";
+    const itemName = getCountryName(item);
     return itemName === countryName;
   });
 
@@ -116,7 +122,10 @@ function CountryDetails({ isDark, setIsDark, favorites = [], toggleFavorite }) {
         </Main>
 
         <ReviewSection>
-          <CountryReview countryName={countryName} />
+          <CountryReview
+            countryName={countryName}
+            updateCountryRating={updateCountryRating}
+          />
         </ReviewSection>
 
         <CountryClimate country={country} capital={capital} weather={weather} />

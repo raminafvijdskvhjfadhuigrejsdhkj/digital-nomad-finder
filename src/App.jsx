@@ -3,41 +3,34 @@ import { Route, Routes } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Favorites from "./pages/Favorites";
-import Loading from "./pages/Loading";
 import CountryDetails from "./pages/CountryDetails";
 import { countries as countriesData } from "./data/countries";
+import { getCountryName } from "./utils/getCountryName";
 
 function App({ isDark, setIsDark }) {
   const [countries, setCountries] = useState([]);
-  const [search, setSearch] = useState("");
-  const [region, setRegion] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [showSlowLoading, setShowSlowLoading] = useState(false);
 
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem("favorites");
     return savedFavorites ? JSON.parse(savedFavorites) : [];
   });
 
+  const [ratings, setRatings] = useState(() => {
+    const savedRatings = localStorage.getItem("ratings");
+    return savedRatings ? JSON.parse(savedRatings) : {};
+  });
+
+  useEffect(() => {
+    setCountries(countriesData);
+  }, []);
+
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
   useEffect(() => {
-    const slowTimer = setTimeout(() => {
-      setShowSlowLoading(true);
-    }, 2000);
-
-    setCountries(countriesData);
-    setLoading(false);
-    setShowSlowLoading(false);
-
-    return () => clearTimeout(slowTimer);
-  }, []);
-
-  function getCountryName(country) {
-    return country.name?.common || country.name || "Unknown";
-  }
+    localStorage.setItem("ratings", JSON.stringify(ratings));
+  }, [ratings]);
 
   function toggleFavorite(country) {
     const countryName = getCountryName(country);
@@ -55,17 +48,11 @@ function App({ isDark, setIsDark }) {
     }
   }
 
-  const filteredCountries = countries.filter((country) => {
-    const countryName = getCountryName(country);
-
-    return (
-      countryName.toLowerCase().includes(search.toLowerCase()) &&
-      (region === "" || region === "All" || country.region === region)
-    );
-  });
-
-  if (loading && showSlowLoading) {
-    return <Loading />;
+  function updateCountryRating(countryName, average) {
+    setRatings((prev) => ({
+      ...prev,
+      [countryName]: average,
+    }));
   }
 
   return (
@@ -74,15 +61,12 @@ function App({ isDark, setIsDark }) {
         path="/"
         element={
           <Home
-            countries={filteredCountries}
-            search={search}
-            setSearch={setSearch}
-            region={region}
-            setRegion={setRegion}
+            countries={countries}
             isDark={isDark}
             setIsDark={setIsDark}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            ratings={ratings}
           />
         }
       />
@@ -91,30 +75,29 @@ function App({ isDark, setIsDark }) {
         path="/countries"
         element={
           <Home
-            countries={filteredCountries}
-            search={search}
-            setSearch={setSearch}
-            region={region}
-            setRegion={setRegion}
+            countries={countries}
             isDark={isDark}
             setIsDark={setIsDark}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            ratings={ratings}
           />
         }
       />
 
       <Route
-  path="/country/:name"
-  element={
-    <CountryDetails
-      isDark={isDark}
-      setIsDark={setIsDark}
-      favorites={favorites}
-      toggleFavorite={toggleFavorite}
-    />
-  }
-/>
+        path="/country/:name"
+        element={
+          <CountryDetails
+            isDark={isDark}
+            setIsDark={setIsDark}
+            favorites={favorites}
+            toggleFavorite={toggleFavorite}
+            ratings={ratings}
+            updateCountryRating={updateCountryRating}
+          />
+        }
+      />
 
       <Route
         path="/favorites"
@@ -124,6 +107,7 @@ function App({ isDark, setIsDark }) {
             toggleFavorite={toggleFavorite}
             isDark={isDark}
             setIsDark={setIsDark}
+            ratings={ratings}
           />
         }
       />

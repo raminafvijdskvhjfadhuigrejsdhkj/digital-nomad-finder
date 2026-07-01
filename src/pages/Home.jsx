@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import CountryCard from "../components/CountryCard";
 import FilterPanel from "../components/FilterPanel";
 import useCountryFilters from "../hooks/useCountryFilters";
+import { getCountryName } from "../utils/getCountryName";
 
 const Hero = styled.section`
   min-height: 520px;
@@ -73,16 +74,17 @@ const CountriesGrid = styled.div`
 
 function Home({
   countries,
-  search,
-  setSearch,
-  region,
-  setRegion,
   isDark,
   setIsDark,
   favorites,
   toggleFavorite,
+  ratings,
 }) {
   const {
+    search,
+    setSearch,
+    region,
+    setRegion,
     budget,
     setBudget,
     internet,
@@ -95,7 +97,7 @@ function Home({
     setVisaFriendly,
     clearFilters,
     filteredCountries,
-  } = useCountryFilters(countries, search, setSearch, region, setRegion);
+  } = useCountryFilters(countries);
 
   return (
     <Layout isDark={isDark} setIsDark={setIsDark}>
@@ -137,16 +139,16 @@ function Home({
         </SectionText>
 
         <CountriesGrid>
-          {filteredCountries.map((country, index) => {
-            const countryName =
-              country.name?.common || country.name || "Unknown";
+          {filteredCountries.map((country) => {
+            const countryName = getCountryName(country);
 
             return (
               <CountryCard
-                key={`${countryName}-${index}`}
+                key={countryName}
                 country={country}
                 favorites={favorites}
                 toggleFavorite={toggleFavorite}
+                rating={ratings[countryName]}
               />
             );
           })}
